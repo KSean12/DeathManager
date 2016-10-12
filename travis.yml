@@ -1,0 +1,5 @@
+language: csharp
+solution: DeathManager.sln
+
+notifications:
+ email: false
