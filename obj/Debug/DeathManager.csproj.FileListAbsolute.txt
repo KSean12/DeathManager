@@ -1,0 +1,11 @@
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\DeathManager.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\DeathManager.pdb
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\Assembly-CSharp.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\Rocket.API.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\Rocket.Core.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\Rocket.Unturned.dll
+C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\UnityEngine.dll
+C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.csprojResolveAssemblyReference.cache
+C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.dll
+C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.pdb

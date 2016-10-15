@@ -4,13 +4,14 @@ using Rocket.Unturned.Chat;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Steamworks;
 using System;
 
 namespace DeathManager
 {
     public class DeathManager : RocketPlugin<Configuration>
     {
-
+        public static UnturnedPlayer murderer3;
         public static DeathManager Instance;
 
         protected override void Load()
@@ -37,9 +38,9 @@ namespace DeathManager
 
        
 
-        private void UnturnedPlayerEvents_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, Steamworks.CSteamID murderer)
+        private void UnturnedPlayerEvents_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            //string killer = 
+            murderer3 = UnturnedPlayer.FromCSteamID(murderer);
             string death = cause.ToString();
           
             try
@@ -66,9 +67,9 @@ namespace DeathManager
                         break;
                     case "GUN":
                         if (limb == ELimb.SKULL)
-                            UnturnedChat.Say("["+ death +"]" + "[Murderer: " + murderer.ToString() + " ]" +  player.DisplayName + limb);
+                            UnturnedChat.Say("["+ death +"]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" +  player.DisplayName + limb);
                         else
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer.ToString() + " ]" + player.DisplayName);
+                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
                         break;
                     case "MELEE":
                         if (limb == ELimb.SKULL)
@@ -83,22 +84,22 @@ namespace DeathManager
                         UnturnedChat.Say("[" + death + "]" + player.DisplayName);
                         break;
                     case "KILL":
-                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer.ToString() + " ]" + player.DisplayName);
+                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
                         break;
                     case "INFECTION":
                         UnturnedChat.Say("[" + death + "]" + player.DisplayName);
                         break;
                     case "PUNCH":
                         if (limb == ELimb.SKULL)
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer.ToString() + " ]" + player.DisplayName + limb);
+                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName + limb);
                         else
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer.ToString() + " ]" + player.DisplayName);
+                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
                         break;
                     case "BREATH":
                         UnturnedChat.Say("[" + death + "]" + player.DisplayName);
                         break;
                     case "ROADKILL":
-                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer.ToString() + "]" + player.DisplayName);
+                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + "]" + player.DisplayName);
                         break;
                     case "VEHICLE":
                         UnturnedChat.Say("[" + death + "]" + player.DisplayName);
