@@ -1,4 +1,5 @@
-﻿using Rocket.Core.Logging;
+﻿using Rocket.API.Collections;
+using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Events;
@@ -6,12 +7,13 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using System;
+using UnityEngine;
 
 namespace DeathManager
 {
     public class DeathManager : RocketPlugin<Configuration>
     {
-        public static UnturnedPlayer murderer3;
+        public static UnturnedPlayer killer;
         public static DeathManager Instance;
 
         protected override void Load()
@@ -34,93 +36,130 @@ namespace DeathManager
                 UnturnedPlayerEvents.OnPlayerDeath -= UnturnedPlayerEvents_OnPlayerDeath;
             }
         }
+        public override TranslationList DefaultTranslations
+        {
+            get
+            {
+                return new TranslationList()
+                {
+                    {"gun","{0} [GUN] {2} {1}"},
+                    {"death","ADMIN [KILL] {0}"},
+                    {"null","[NULL] {0}"},
+                    {"food","[FOOD] {0}"},
+                    {"arena","[ARENA] {0}"},
+                    {"shred","[SHRED] {0}"},
+                    {"punch","{0} [PUNCH] {2} {1}"},
+                    {"bones","[BONES] {0}"},
+                    {"melee","{0} [MELEE] {2} {1}"},
+                    {"water","[WATER] {0}"},
+                    {"breath","[BREATH] {0}"},
+                    {"zombie","[ZOMBIE] {0}"},
+                    {"animal","[ANIMAL] {0}"},
+                    {"grenade","??? [EXPLOSION] {0}"},
+                    {"vehicle","[VEHICLE] {0}"},
+                    {"suicide","[SUICIDE] {0}"},
+                    {"burning","[BURNING] {0}"},
+                    {"headshot","+ [HEADSHOT]" },
+                    {"landmine","??? [LANDMINE] {0}"},
+                    {"roadkill","{0} [ROADKILL] {1}"},
+                    {"bleeding","[BLEEDING] {0}"},
+                    {"freezing","[FREEZING] {0}"},
+                    {"infection","[INFECTION] {0}"},
+                };
+            }
+        }
 
 
-       
+
 
         private void UnturnedPlayerEvents_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            murderer3 = UnturnedPlayer.FromCSteamID(murderer);
+            killer = UnturnedPlayer.FromCSteamID(murderer);
             string death = cause.ToString();
-          
+            string headshot = string.Empty;
+            if (Instance.Configuration.Instance.ShowHeadshotMessages)
+            {
+                headshot = Instance.Translations.Instance.Translate("headshot");
+            }
             try
             {
                 switch (death)
                 {
                     case "BLEEDING":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("bleeding", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "BONES":
-                        UnturnedChat.Say("["+ death +"]" + player.DisplayName );
+                        UnturnedChat.Say(Translate("bones", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "FREEZING":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("freezing", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "BURNING":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("burning", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "FOOD":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("food", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "WATER":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("water", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "GUN":
                         if (limb == ELimb.SKULL)
-                            UnturnedChat.Say("["+ death +"]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" +  player.DisplayName + limb);
+                            UnturnedChat.Say(Translate("gun", killer.DisplayName, player.DisplayName, headshot), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         else
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
+                            UnturnedChat.Say(Translate("gun", killer.DisplayName, player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "MELEE":
                         if (limb == ELimb.SKULL)
-                            UnturnedChat.Say(death + player.DisplayName);
+                            UnturnedChat.Say(Translate("melee", killer.DisplayName, player.DisplayName, headshot), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         else
-                            UnturnedChat.Say(death + player.DisplayName);
+                            UnturnedChat.Say(Translate("melee", killer.DisplayName, player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "ZOMBIE":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("zombie", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "ANIMAL":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("animal", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "KILL":
-                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("kill", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "INFECTION":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("infection", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "PUNCH":
                         if (limb == ELimb.SKULL)
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName + limb);
+                            UnturnedChat.Say(Translate("punch", killer.DisplayName, player.DisplayName, headshot), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         else
-                            UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + " ]" + player.DisplayName);
+                            UnturnedChat.Say(Translate("punch", killer.DisplayName, player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "BREATH":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("breath", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "ROADKILL":
-                        UnturnedChat.Say("[" + death + "]" + "[Murderer: " + murderer3.DisplayName.ToString() + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("roadkill", killer.DisplayName, player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "VEHICLE":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("vehicle", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "GRENADE":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("grenade", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "SHRED":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("shred", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "LANDMINE":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("landmine", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "ARENA":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        UnturnedChat.Say(Translate("arena", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     case "SUICIDE":
-                        UnturnedChat.Say("[" + death + "]" + player.DisplayName);
+                        if (Instance.Configuration.Instance.ShowSuicideMessages)
+                            UnturnedChat.Say(Translate("suicide", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                     default:
-                        UnturnedChat.Say(death + player.DisplayName);
+                        UnturnedChat.Say(Translate("null", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
                 }
             }
