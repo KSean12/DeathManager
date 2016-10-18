@@ -1,4 +1,7 @@
-﻿using Rocket.API.Collections;
+﻿using fr34kyn01535.Uconomy;
+using Rocket.API;
+using Rocket.API.Collections;
+using Rocket.Core.Commands;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 using Rocket.Unturned.Chat;
@@ -7,6 +10,7 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DeathManager
@@ -15,6 +19,8 @@ namespace DeathManager
     {
         public static UnturnedPlayer killer;
         public static DeathManager Instance;
+        private IDictionary<string, DeathNote> deathNotes;
+
 
         protected override void Load()
         {
@@ -22,6 +28,7 @@ namespace DeathManager
 
             if (Instance.Configuration.Instance.Enabled)
             {
+                deathNotes = new Dictionary<string, DeathNote>();
                 UnturnedPlayerEvents.OnPlayerDeath += UnturnedPlayerEvents_OnPlayerDeath;
 
                 Logger.Log("[DeathManager] The Plugin Has Been loaded!");
@@ -69,14 +76,18 @@ namespace DeathManager
             }
         }
 
-
-
-
-        private void UnturnedPlayerEvents_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
+        private void UnturnedPlayerEvents_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer )
         {
+            deathNotes[player.SteamName] = new DeathNote() { Position = player.Position, TimeOfDeath = DateTime.Now };
             killer = UnturnedPlayer.FromCSteamID(murderer);
             string death = cause.ToString();
             string headshot = string.Empty;
+            string Received = Configuration.Instance.KillerReward + Uconomy.Instance.Configuration.Instance.MoneyName;
+            string TotalMoney = Uconomy.Instance.Database.IncreaseBalance(killer.Id, Configuration.Instance.KillerReward) + Uconomy.Instance.Configuration.Instance.MoneyName;
+            if (Instance.Configuration.Instance.EffectOnDeath)
+            {
+                EffectManager.sendEffect((ushort)Instance.Configuration.Instance.EffectOnDeathId, 30, player.Position);
+            }
             if (Instance.Configuration.Instance.ShowHeadshotMessages)
             {
                 headshot = Instance.Translations.Instance.Translate("headshot");
@@ -85,6 +96,7 @@ namespace DeathManager
             {
                 switch (death)
                 {
+
                     case "BLEEDING":
                         UnturnedChat.Say(Translate("bleeding", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
@@ -161,8 +173,11 @@ namespace DeathManager
                     default:
                         UnturnedChat.Say(Translate("null", player.DisplayName), UnturnedChat.GetColorFromName(Configuration.Instance.DeathMessagesColor, Color.green));
                         break;
+
+
                 }
             }
+
             catch (Exception exc)
             {
                 if (Instance.Configuration.Instance.Debug)
@@ -172,6 +187,50 @@ namespace DeathManager
                 }
             }
         }
+        internal void TrySendBack(UnturnedPlayer player )
+        {
+            if (!Configuration.Instance.BackEnabled)
+                return;
+
+            if (deathNotes.ContainsKey(player.SteamName))
+            {
+                DeathNote deathNote = deathNotes[player.SteamName];
+
+                if (DateTime.Now <= deathNote.TimeOfDeath.AddSeconds(Configuration.Instance.TimeLimit))
+                {
+                    // Teleporting the player back.
+                    player.Teleport(deathNote.Position, player.Rotation);
+
+                    // Saying hello to the dead :)
+                    UnturnedChat.Say(player, "Back !");
+                }
+                else
+                    UnturnedChat.Say(player, "too slow, have a nice walk. ");
+
+                // Removing the reference, we dont want a smart player using our plugin as fast travel.
+                deathNotes.Remove(player.SteamName);
+            }
+            else
+            {
+                // Cant find the poor guy =/
+                UnturnedChat.Say(player, "You have to die first !");
+            }
+        }
+        [RocketCommand("back", "Back To Death Location", "", AllowedCaller.Both)]
+
+        public void Execute(UnturnedPlayer caller , string[] command)
+        {
+            if (command.Length == 0)
+            {
+                if (caller is ConsolePlayer)
+                {
+                    Logger.Log("Admin , Your trying to execute the command from console , Back : to your fucking server!");
+                    return;
+                }
+                if (caller != null )
+                    TrySendBack(caller);
+            }
+        }
+    }
 
     }
-}

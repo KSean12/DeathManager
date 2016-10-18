@@ -9,3 +9,15 @@ C:\Users\gost\Documents\GitHub\DeathManager\bin\Debug\UnityEngine.dll
 C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.csprojResolveAssemblyReference.cache
 C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.dll
 C:\Users\gost\Documents\GitHub\DeathManager\obj\Debug\DeathManager.pdb
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\DeathManager.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\DeathManager.pdb
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Assembly-CSharp-firstpass.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Assembly-CSharp.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Rocket.API.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Rocket.Core.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Rocket.Unturned.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\Uconomy.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\bin\Debug\UnityEngine.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\obj\Debug\DeathManager.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\obj\Debug\DeathManager.dll
+C:\Users\User\Desktop\DeathManager-master\DeathManager-master\obj\Debug\DeathManager.pdb
