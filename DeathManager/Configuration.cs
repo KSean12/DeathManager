@@ -4,23 +4,21 @@ namespace DeathManager
 {
     public class Configuration : IRocketPluginConfiguration
     {
-        public bool Enabled;
-        public bool Debug;
+        public bool Enabled = true;
+
+        public bool ShowErrorMessages ;
+        public bool ShowSuicideMessages ;
+        public bool ShowHeadshotMessages ;
+
         public string DeathMessagesColor;
-        public bool ShowSuicideMessages, ShowHeadshotMessages, EffectOnDeath, BackEnabled;
-        public decimal KillerReward, EffectOnDeathId;
-        public double TimeLimit;
 
         public void LoadDefaults()
         {
             Enabled = true;
-            Debug = true;
+            ShowErrorMessages = true;
             ShowSuicideMessages = true;
             ShowHeadshotMessages = true;
             DeathMessagesColor = "Red";
-            EffectOnDeath = true;
-            EffectOnDeathId = 45;
-            KillerReward = 500;
         }
     }
 }
